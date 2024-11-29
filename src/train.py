@@ -122,6 +122,7 @@ def train(model, train_loader, test_loader, optimizer, scheduler, device, num_ep
                     f"{batch_idx:^6d}/{len(train_loader):^6d}"
                 )
         
+        
         print("-" * 100)
         
         # Calculate final training accuracy for this epoch
@@ -168,7 +169,7 @@ def main():
     train_loader, test_loader = get_mnist_loaders(batch_size=128)
     
     # Optimizer and Scheduler setup for multiple epochs
-    num_epochs = 15
+    num_epochs = 20
     optimizer = optim.Adam(model.parameters(), lr=0.01)
     
     # Scheduler for the entire training duration
@@ -178,7 +179,7 @@ def main():
         epochs=num_epochs,
         steps_per_epoch=len(train_loader),
         div_factor=10,
-        final_div_factor=50, # final LR = initial_lr / final_div_factor
+        #final_div_factor=100, # final LR = initial_lr / final_div_factor
         pct_start=0.3,
         anneal_strategy='cos'
     )
