@@ -1,5 +1,5 @@
 
-# MNIST Model MLOps Project
+# MNIST Model Fine-Tuned Project
 
 A lightweight MNIST classifier with complete MLOps pipeline including automated testing, validation, and deployment.
 
