@@ -17,26 +17,54 @@ def get_mnist_loaders(batch_size=128):
     # Get data directory path
     data_path = get_data_path()
     
-    transform = transforms.Compose([
+    # Training transforms with augmentation
+    train_transform = transforms.Compose([
+        transforms.RandomAffine(
+            degrees=5,  # Slight rotation (-5 to +5 degrees)
+            translate=(0.05, 0.05),  # Small random shifts
+            scale=(0.95, 1.05),  # Slight scaling
+            fill=0  # Fill empty areas with black
+        ),
+        transforms.RandomPerspective(
+            distortion_scale=0.2,
+            p=0.2,  # Apply perspective transform 20% of the time
+            fill=0
+        ),
         transforms.ToTensor(),
-        transforms.Normalize((0.1307,), (0.3081,)) # Lets check later whether to keep this normalization or not
+        transforms.Normalize((0.1307,), (0.3081,))
     ])
     
-    train_dataset = datasets.MNIST(data_path, 
-                                 train=True, 
-                                 download=True, 
-                                 transform=transform)
+    # Test transforms (no augmentation needed)
+    test_transform = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Normalize((0.1307,), (0.3081,))
+    ])
     
-    test_dataset = datasets.MNIST(data_path, 
-                                train=False, 
-                                transform=transform)
+    # Load datasets with respective transforms
+    train_dataset = datasets.MNIST(
+        data_path, train=True, download=True,
+        transform=train_transform
+    )
     
-    train_loader = torch.utils.data.DataLoader(train_dataset,
-                                             batch_size=batch_size,
-                                             shuffle=True)
+    test_dataset = datasets.MNIST(
+        data_path, train=False,
+        transform=test_transform
+    )
     
-    test_loader = torch.utils.data.DataLoader(test_dataset,
-                                            batch_size=batch_size,
-                                            shuffle=False)
+    train_loader = torch.utils.data.DataLoader(
+        train_dataset,
+        batch_size=batch_size,
+        shuffle=True,
+        num_workers=2,
+        pin_memory=True
+    )
+    
+    test_loader = torch.utils.data.DataLoader(
+        test_dataset,
+        batch_size=batch_size,
+        shuffle=False,
+        num_workers=2,
+        pin_memory=True
+    )
     
     return train_loader, test_loader 
