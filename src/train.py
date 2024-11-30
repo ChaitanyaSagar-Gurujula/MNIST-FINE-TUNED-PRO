@@ -208,13 +208,15 @@ def main():
     train_loader, test_loader = get_mnist_loaders(batch_size=128)
     
     # Optimizer and Scheduler setup for multiple epochs
-    num_epochs = 10
-    optimizer = optim.Adam(model.parameters(), lr=0.01)
+    num_epochs = 20
+    learning_rate = 0.01
+    #optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+    optimizer = optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=1e-4)
     
     # Scheduler for the entire training duration
     scheduler = optim.lr_scheduler.OneCycleLR(
         optimizer,
-        max_lr=0.01,
+        max_lr=learning_rate,
         epochs=num_epochs,
         steps_per_epoch=len(train_loader),
         div_factor=10,

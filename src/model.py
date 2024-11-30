@@ -30,7 +30,7 @@ class LightMNIST(nn.Module):
         self.bn1d_2 = nn.BatchNorm1d(8)  # Match the output channels of conv1d_2
 
         # Fully connected layer
-        self.fc1 = nn.Linear(32*3*3, 10)  # Input: flattened 32*3*3 -> Output: 10 classes
+        self.fc1 = nn.Linear(32*4*4, 10)  # Input: flattened 32*2*2 -> Output: 10 classes
 
         # Dropout
         self.dropout_1 = nn.Dropout(0.05)  # Slightly reduced dropout
@@ -93,10 +93,11 @@ class LightMNIST(nn.Module):
         x = F.relu(x)
 
         # Global Average Pooling
-        x = F.adaptive_avg_pool2d(x, (3, 3))  # Output: (batch, 32, 3, 3)
+        x = F.adaptive_avg_pool2d(x, (4, 4))  # Output: (batch, 32, 4, 4)
+        #x = F.adaptive_avg_pool2d(x, (2, 2))  # Output: (batch, 32, 2, 2)
 
         # Flatten and fully connected layer
-        x = x.view(batch_size, -1)  # Flatten to (batch, 32*3*3)
+        x = x.view(batch_size, -1)  # Flatten to (batch, 32*2*2)
         x = self.fc1(x)
 
         return F.log_softmax(x, dim=1)
