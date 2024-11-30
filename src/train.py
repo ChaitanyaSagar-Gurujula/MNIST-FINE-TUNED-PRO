@@ -69,7 +69,15 @@ def train(model, train_loader, test_loader, optimizer, scheduler, device, num_ep
         'test_acc': [],
         'train_loss': [],
         'test_loss': [],
-        'learning_rates': []
+        'learning_rates': [],
+        'best_model_info': {
+            'epoch': 0,
+            'train_acc': 0,
+            'train_loss': 0,
+            'test_acc': 0,
+            'test_loss': 0
+        },
+        'total_params': count_parameters(model)
     }
     
     best_acc = 0.0
@@ -148,13 +156,44 @@ def train(model, train_loader, test_loader, optimizer, scheduler, device, num_ep
         print(f"Training - Accuracy: {train_acc:.2f}%, Loss: {train_loss:.4f}")
         print(f"Testing  - Accuracy: {test_acc:.2f}%, Loss: {test_loss:.4f}")
         
-        # Save best model
+        # Save best model and its details
         if test_acc > best_acc:
             best_acc = test_acc
             print(f"New best accuracy! Saving model...")
             torch.save(model.state_dict(), 'best_model.pth')
+            
+            # Store best model information
+            history['best_model_info'] = {
+                'epoch': epoch,
+                'train_acc': train_acc,
+                'train_loss': train_loss,
+                'test_acc': test_acc,
+                'test_loss': test_loss
+            }
     
+    # Print conclusion after training
+    print_training_conclusion(history)
     return history
+
+def print_training_conclusion(history):
+    """Print final training conclusions and best model details"""
+    print("\n" + "="*50)
+    print("TRAINING COMPLETED - FINAL RESULTS")
+    print("="*50)
+    
+    print(f"\nModel Architecture:")
+    print(f"└── Total Parameters: {history['total_params']:,}")
+    
+    best_info = history['best_model_info']
+    
+    print(f"\nBest Model achieved at Epoch {best_info['epoch']}:")
+    print(f"├── Training Accuracy: {best_info['train_acc']:.2f}%")
+    print(f"├── Training Loss: {best_info['train_loss']:.4f}")
+    print(f"├── Test Accuracy: {best_info['test_acc']:.2f}%")
+    print(f"└── Test Loss: {best_info['test_loss']:.4f}")
+    
+    print("\nModel saved as: 'best_model.pth'")
+    print("="*50)
 
 def main():
     # Set device
@@ -169,7 +208,7 @@ def main():
     train_loader, test_loader = get_mnist_loaders(batch_size=128)
     
     # Optimizer and Scheduler setup for multiple epochs
-    num_epochs = 20
+    num_epochs = 10
     optimizer = optim.Adam(model.parameters(), lr=0.01)
     
     # Scheduler for the entire training duration
@@ -179,7 +218,7 @@ def main():
         epochs=num_epochs,
         steps_per_epoch=len(train_loader),
         div_factor=10,
-        #final_div_factor=100, # final LR = initial_lr / final_div_factor
+        final_div_factor=1000, # final LR = initial_lr / final_div_factor
         pct_start=0.3,
         anneal_strategy='cos'
     )
@@ -188,10 +227,10 @@ def main():
     history = train(model, train_loader, test_loader, optimizer, scheduler, device, num_epochs=num_epochs)
     
     # Plot training history
-    plot_training_history(history)
+    #plot_training_history(history)
     
     # Plot detailed learning rate changes
-    plot_lr_changes(history, num_epochs)
+    #plot_lr_changes(history, num_epochs)
 
 def plot_training_history(history):
     """Plot training metrics including learning rate"""

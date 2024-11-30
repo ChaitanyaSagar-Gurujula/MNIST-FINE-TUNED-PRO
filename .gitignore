@@ -26,6 +26,7 @@ wheels/
 
 # PyTorch
 *.pth
+!best_model.pth
 
 # Data
 data/

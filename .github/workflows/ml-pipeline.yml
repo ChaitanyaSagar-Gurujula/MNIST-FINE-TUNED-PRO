@@ -37,12 +37,13 @@ jobs:
         pip install -r requirements.txt
         pip install -e .
 
+    # Skipping model training as github can not train till 20 epochs. So we will use the pre-trained model that we have trained locally.
     # 2. Train model
-    - name: Train and save model
+    # - name: Train and save model
     #  env:
     #    PYTHONPATH: ${{ github.workspace }}
-      run: |
-        python -m src.train
+    #  run: |
+    #    python -m src.train
 
     # 3. Upload trained model as artifact
     - name: Upload model artifact
