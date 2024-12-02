@@ -22,7 +22,7 @@ class LightMNIST(nn.Module):
         self.bn4 = nn.BatchNorm2d(16)
         self.bn5 = nn.BatchNorm2d(16)
         self.bn6 = nn.BatchNorm2d(24)
-        self.bn_fc1 = nn.BatchNorm1d(64)
+        self.bn_fc1 = nn.BatchNorm1d(32)
 
         # 1D Convolution for channel reduction
         self.conv1d_1 = nn.Conv1d(8, 4, kernel_size=1)  # Input: (batch, 8, 196) -> Output: (batch, 4, 196)
@@ -31,8 +31,8 @@ class LightMNIST(nn.Module):
         self.bn1d_2 = nn.BatchNorm1d(8)  # Match the output channels of conv1d_2
 
         # Fully connected layer
-        self.fc1 = nn.Linear(24*2*2, 64)  # Input: flattened 32*2*2 -> Output: 10 classes
-        self.fc2 = nn.Linear(64, 10)  # Input: flattened 32*2*2 -> Output: 10 classes
+        self.fc1 = nn.Linear(24*2*2, 32)  # Input: flattened 32*2*2 -> Output: 10 classes
+        self.fc2 = nn.Linear(32, 10)  # Input: flattened 32*2*2 -> Output: 10 classes
 
         # Dropout
         self.dropout_1 = nn.Dropout(0.05)  # Slightly reduced dropout
