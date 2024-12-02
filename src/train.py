@@ -260,7 +260,7 @@ def main():
     print(f"Total parameters: {count_parameters(model)}")
     
     # Get data loaders
-    train_loader, test_loader = get_mnist_loaders(batch_size=512, is_training=True)
+    train_loader, test_loader = get_mnist_loaders(batch_size=128, is_training=True)
     
     # Optimizer and Scheduler setup for multiple epochs
     num_epochs = 20
