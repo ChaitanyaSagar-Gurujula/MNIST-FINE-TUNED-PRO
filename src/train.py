@@ -172,10 +172,10 @@ def train(model, train_loader, test_loader, optimizer, scheduler, device, num_ep
             }
     
     # Print conclusion after training
-    print_training_conclusion(history)
+    print_training_conclusion(history, model, device)
     return history
 
-def print_training_conclusion(history):
+def print_training_conclusion(history, model, device):
     """Print final training conclusions and best model details"""
     print("\n" + "="*50)
     print("TRAINING COMPLETED - FINAL RESULTS")
@@ -186,14 +186,69 @@ def print_training_conclusion(history):
     
     best_info = history['best_model_info']
     
+    # Get accuracy without transformations
+    model.eval()  # Set model to evaluation mode
+    train_loader_no_aug, _ = get_mnist_loaders(batch_size=512, is_training=False)
+    train_acc_no_aug, train_loss_no_aug, _, _ = calculate_accuracy(
+        model, train_loader_no_aug, device, desc="Training (No Aug)"
+    )
+    
     print(f"\nBest Model achieved at Epoch {best_info['epoch']}:")
-    print(f"├── Training Accuracy: {best_info['train_acc']:.2f}%")
+    print(f"├── Training Accuracy (with aug): {best_info['train_acc']:.2f}%")
+    print(f"├── Training Accuracy (no aug): {train_acc_no_aug:.2f}%")
     print(f"├── Training Loss: {best_info['train_loss']:.4f}")
     print(f"├── Test Accuracy: {best_info['test_acc']:.2f}%")
     print(f"└── Test Loss: {best_info['test_loss']:.4f}")
     
     print("\nModel saved as: 'best_model.pth'")
     print("="*50)
+
+def visualize_misclassified(model, test_loader, device, num_images=25):
+    """
+    Visualize misclassified images using the trained model
+    
+    Args:
+        model: Trained model
+        test_loader: Test data loader
+        device: Device to run inference on
+        num_images: Number of misclassified images to show
+    """
+    model.eval()
+    misclassified_images = []
+    misclassified_labels = []
+    predicted_labels = []
+    
+    with torch.no_grad():
+        for data, target in test_loader:
+            data, target = data.to(device), target.to(device)
+            output = model(data)
+            pred = output.argmax(dim=1)
+            
+            # Find misclassified indices
+            incorrect_idx = pred.ne(target).nonzero(as_tuple=True)[0]
+            
+            for idx in incorrect_idx:
+                if len(misclassified_images) >= num_images:
+                    break
+                    
+                misclassified_images.append(data[idx].cpu())
+                misclassified_labels.append(target[idx].cpu())
+                predicted_labels.append(pred[idx].cpu())
+                
+            if len(misclassified_images) >= num_images:
+                break
+    
+    # Plot the misclassified images
+    plt.figure(figsize=(15, 10))
+    for idx in range(len(misclassified_images)):
+        plt.subplot(5, 5, idx + 1)
+        plt.imshow(misclassified_images[idx].squeeze(), cmap='gray')
+        plt.title(f'True: {misclassified_labels[idx]}\nPred: {predicted_labels[idx]}')
+        plt.axis('off')
+    
+    plt.tight_layout()
+    plt.savefig('misclassified.png')
+    plt.show()
 
 def main():
     # Set device
@@ -205,7 +260,7 @@ def main():
     print(f"Total parameters: {count_parameters(model)}")
     
     # Get data loaders
-    train_loader, test_loader = get_mnist_loaders(batch_size=128)
+    train_loader, test_loader = get_mnist_loaders(batch_size=512, is_training=True)
     
     # Optimizer and Scheduler setup for multiple epochs
     num_epochs = 20
@@ -227,6 +282,12 @@ def main():
     
     # Train the model
     history = train(model, train_loader, test_loader, optimizer, scheduler, device, num_epochs=num_epochs)
+    
+    # Load the best model
+    model.load_state_dict(torch.load('best_model.pth', map_location=device, weights_only=True))
+    
+    # Visualize misclassified images
+    visualize_misclassified(model, test_loader, device)
     
     # Plot training history
     #plot_training_history(history)

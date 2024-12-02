@@ -28,7 +28,7 @@ def test_model_performance():
         pytest.skip("No saved model found. Run training first.")
     
     # Get both train and test loaders
-    train_loader, test_loader = get_mnist_loaders(batch_size=128)
+    train_loader, test_loader = get_mnist_loaders(batch_size=128, is_training=False)
     
     # Evaluate on training set
     train_acc, train_loss, train_correct, train_total = calculate_accuracy(
