@@ -31,8 +31,8 @@ class LightMNIST(nn.Module):
         self.bn1d_2 = nn.BatchNorm1d(8)  # Match the output channels of conv1d_2
 
         # Fully connected layer
-        self.fc1 = nn.Linear(24*2*2, 32)  # Input: flattened 32*2*2 -> Output: 10 classes
-        self.fc2 = nn.Linear(32, 10)  # Input: flattened 32*2*2 -> Output: 10 classes
+        self.fc1 = nn.Linear(24*2*2, 10)  # Input: flattened 32*2*2 -> Output: 10 classes
+        #self.fc2 = nn.Linear(32, 10)  # Input: flattened 32*2*2 -> Output: 10 classes
 
         # Dropout
         self.dropout_1 = nn.Dropout(0.05)  # Slightly reduced dropout
@@ -101,8 +101,8 @@ class LightMNIST(nn.Module):
         # Flatten and fully connected layer
         x = x.view(batch_size, -1)  # Flatten to (batch, 32*2*2)
         x = self.fc1(x)
-        x = self.bn_fc1(x)
-        x = F.relu(x)
-        x = self.fc2(x)
+        #x = self.bn_fc1(x)
+        #x = F.relu(x)
+        #x = self.fc2(x)
 
         return F.log_softmax(x, dim=1)
