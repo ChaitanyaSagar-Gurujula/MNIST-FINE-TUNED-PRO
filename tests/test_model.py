@@ -52,14 +52,18 @@ def test_model_performance():
 def test_batch_normalization():
     """Test if BatchNorm layers are working correctly"""
     model = LightMNIST()
-    model.eval()  # Set to eval mode to test running stats
+    model.train()  # Set to train mode to update running stats
     
-    # Create dummy input
-    x = torch.randn(4, 1, 28, 28)
+    # Create dummy input and do multiple forward passes
+    x = torch.randn(4, 1, 28, 28)  # Larger batch size
     
-    # Forward pass
+    # Do multiple forward passes to accumulate statistics
     with torch.no_grad():
-        output = model(x)
+        for _ in range(10):  # Multiple passes
+            output = model(x)
+    
+    # Switch to eval mode
+    model.eval()
     
     # Check if BatchNorm statistics are initialized
     assert hasattr(model.bn1, 'running_mean'), "BatchNorm1 has no running mean"

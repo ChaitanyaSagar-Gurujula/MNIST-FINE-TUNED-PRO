@@ -123,36 +123,38 @@ git push -u origin main
 
 ## Model Architecture
 
-```python
-class LightMNIST(nn.Module):
-    def __init__(self):
-        super(LightMNIST, self).__init__()
-        self.conv1 = nn.Conv2d(1, 8, kernel_size=3, padding=1)
-        self.conv2 = nn.Conv2d(8, 16, kernel_size=3, padding=1)
-        self.fc1 = nn.Linear(16 * 7 * 7, 10)
-        
-        self.bn1 = nn.BatchNorm2d(10)
-        self.bn2 = nn.BatchNorm2d(16)
-        self.dropout = nn.Dropout(0.1)
-```
+- Used 3 Convolutional blocks with Batch Normalization and Dropout for regularization.
+- Used Adaptive Global Average Pooling followed by Fully Connected layer to map to output classes.
+- Used OneCycleLR Scheduler for learning rate optimization.
+- Used Adam Optimizer with weight decay for better convergence.
+- Used Random Affine, Perspective and Erasing Augmentations for better model generalization.
 
 ## Training Configuration
 
-- **Optimizer:** Adam
+- **Optimizer:** AdamW
 - **Learning Rate:** OneCycleLR (max_lr=0.01)
 - **Batch Size:** 128
-- **Epochs:** Configurable (default=1)
+- **Epochs:** Configurable (default=20)
 
 ## Test Cases
 
 ### Model Architecture:
-- Parameter count < 25k
+- Parameter count: 8,966
 - Correct output shape
 
 ### Model Performance:
-- Training accuracy > 95%
-- Test accuracy > 95%
+- Training accuracy = 99.55%
+- Test accuracy = 99.55%
+
+## Logs
+
+During training, detailed logs are generated showing batch progress, loss, accuracy, and learning rate. After training, a summary of the best model's performance is displayed, including training and test accuracies with and without augmentations.
+
+### Training Output Screenshot
+![Training Log](Training%20Logs.png)
 
 ## License
 
 Distributed under the MIT License. See LICENSE for more information.
+
+

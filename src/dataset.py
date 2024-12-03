@@ -36,7 +36,7 @@ def get_mnist_loaders(batch_size=128, is_training=True):
         transforms.ToTensor(),
         # 3. Erasing (works on tensor)
         transforms.RandomErasing(
-            p=0.1,
+            p=0.2,
             scale=(0.02, 0.15),
             ratio=(0.3, 3.3),
             value=0

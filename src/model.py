@@ -12,97 +12,88 @@ class LightMNIST(nn.Module):
         self.conv3 = nn.Conv2d(4, 8, kernel_size=3, padding=1)  # Input: 4x14x14 -> Output: 8x14x14
         self.conv4 = nn.Conv2d(8, 16, kernel_size=3, padding=1)  # Input: 8x14x14 -> Output: 16x14x14
         self.conv5 = nn.Conv2d(8, 16, kernel_size=3, padding=1)  # Input: 8x7x7 -> Output: 16x7x7
-        self.conv6 = nn.Conv2d(16, 24, kernel_size=3, padding=1)  # Input: 16x7x7 -> Output: 32x7x7
+        self.conv6 = nn.Conv2d(16, 24, kernel_size=3, padding=1)  # Input: 16x7x7 -> Output: 24x7x7
 
-
-        # Batch normalization
-        self.bn1 = nn.BatchNorm2d(4)
-        self.bn2 = nn.BatchNorm2d(8)
-        self.bn3 = nn.BatchNorm2d(8)
-        self.bn4 = nn.BatchNorm2d(16)
-        self.bn5 = nn.BatchNorm2d(16)
-        self.bn6 = nn.BatchNorm2d(24)
-        #self.bn_fc1 = nn.BatchNorm1d(32)
+        # Batch normalization layers for each convolutional block
+        self.bn1 = nn.BatchNorm2d(4)   # BatchNorm after conv1
+        self.bn2 = nn.BatchNorm2d(8)   # BatchNorm after conv2
+        self.bn3 = nn.BatchNorm2d(8)   # BatchNorm after conv3
+        self.bn4 = nn.BatchNorm2d(16)  # BatchNorm after conv4
+        self.bn5 = nn.BatchNorm2d(16)  # BatchNorm after conv5
+        self.bn6 = nn.BatchNorm2d(24)  # BatchNorm after conv6
 
         # 1D Convolution for channel reduction
         self.conv1d_1 = nn.Conv1d(8, 4, kernel_size=1)  # Input: (batch, 8, 196) -> Output: (batch, 4, 196)
-        self.bn1d_1 = nn.BatchNorm1d(4)  # Match the output channels of conv1d_1
+        self.bn1d_1 = nn.BatchNorm1d(4)  # BatchNorm for conv1d_1
         self.conv1d_2 = nn.Conv1d(16, 8, kernel_size=1)  # Input: (batch, 16, 49) -> Output: (batch, 8, 49)
-        self.bn1d_2 = nn.BatchNorm1d(8)  # Match the output channels of conv1d_2
+        self.bn1d_2 = nn.BatchNorm1d(8)  # BatchNorm for conv1d_2
 
-        # Fully connected layer
-        self.fc1 = nn.Linear(24*2*2, 10)  # Input: flattened 32*2*2 -> Output: 10 classes
-        #self.fc2 = nn.Linear(32, 10)  # Input: flattened 32*2*2 -> Output: 10 classes
+        # Fully connected layer to map to output classes
+        self.fc1 = nn.Linear(24 * 3 * 3, 10)  # Input: flattened 24x3x3 -> Output: 10 classes
 
-        # Dropout
-        self.dropout_1 = nn.Dropout(0.05)  # Slightly reduced dropout
-        # Dropout
-        self.dropout_2 = nn.Dropout(0.01)
+        # Dropout layers for regularization
+        self.dropout_1 = nn.Dropout(0.05)  # Dropout with probability 0.05
+        self.dropout_2 = nn.Dropout(0.01)  # Dropout with probability 0.01 (not currently used)
 
     def forward(self, x):
         # First convolutional block
-        x = self.conv1(x)  # Output: (batch, 4, 28, 28)
-        x = self.bn1(x)
-        x = F.relu(x)
-        x = self.dropout_1(x)
-        x = self.conv2(x)  # Output: (batch, 8, 28, 28)
-        x = self.bn2(x)
-        x = F.relu(x)
-        x = self.dropout_1(x)
-        x = F.max_pool2d(x, 2)  # Output: (batch, 8, 14, 14)
+        x = self.conv1(x)  # Conv1: (batch, 4, 28, 28)
+        x = self.bn1(x)    # BatchNorm after conv1
+        x = F.relu(x)      # ReLU activation
+        x = self.dropout_1(x)  # Dropout for regularization
+        x = self.conv2(x)  # Conv2: (batch, 8, 28, 28)
+        x = self.bn2(x)    # BatchNorm after conv2
+        x = F.relu(x)      # ReLU activation
+        x = self.dropout_1(x)  # Dropout for regularization
+        x = F.max_pool2d(x, 2)  # Max pooling: (batch, 8, 14, 14)
 
         # Reshape for 1D convolution
         batch_size = x.size(0)
-        x = x.view(batch_size, 8, -1)  # Reshape to (batch, channels, height * width) = (batch, 8, 196)
+        x = x.view(batch_size, 8, -1)  # Reshape to (batch, 8, 196)
 
-        # 1D Convolution
-        x = self.conv1d_1(x)  # Output: (batch, 4, 196)
-        x = self.bn1d_1(x)
-        x = F.relu(x)
+        # First 1D convolution
+        x = self.conv1d_1(x)  # Conv1d_1: (batch, 4, 196)
+        x = self.bn1d_1(x)    # BatchNorm after conv1d_1
+        x = F.relu(x)         # ReLU activation
 
         # Reshape back to 2D
-        x = x.view(batch_size, 4, 14, 14)  # Reshape to (batch, channels, height, width)
+        x = x.view(batch_size, 4, 14, 14)  # Reshape to (batch, 4, 14, 14)
 
         # Second convolutional block
-        x = self.conv3(x)  # Output: (batch, 8, 14, 14)
-        x = self.bn3(x)
-        x = F.relu(x)
-        x = self.dropout_1(x)
-        x = self.conv4(x)  # Output: (batch, 16, 14, 14)
-        x = self.bn4(x)
-        x = F.relu(x)
-        x = self.dropout_1(x)
-        x = F.max_pool2d(x, 2)  # Output: (batch, 16, 7, 7)
+        x = self.conv3(x)  # Conv3: (batch, 8, 14, 14)
+        x = self.bn3(x)    # BatchNorm after conv3
+        x = F.relu(x)      # ReLU activation
+        x = self.dropout_1(x)  # Dropout for regularization
+        x = self.conv4(x)  # Conv4: (batch, 16, 14, 14)
+        x = self.bn4(x)    # BatchNorm after conv4
+        x = F.relu(x)      # ReLU activation
+        x = self.dropout_1(x)  # Dropout for regularization
+        x = F.max_pool2d(x, 2)  # Max pooling: (batch, 16, 7, 7)
 
         # Reshape for 1D convolution
-        x = x.view(batch_size, 16, -1)  # Reshape to (batch, channels, height * width) = (batch, 16, 49)
+        x = x.view(batch_size, 16, -1)  # Reshape to (batch, 16, 49)
 
-        # 1D Convolution
-        x = self.conv1d_2(x)  # Output: (batch, 8, 49)
-        x = self.bn1d_2(x)
-        x = F.relu(x)
+        # Second 1D convolution
+        x = self.conv1d_2(x)  # Conv1d_2: (batch, 8, 49)
+        x = self.bn1d_2(x)    # BatchNorm after conv1d_2
+        x = F.relu(x)         # ReLU activation
 
         # Reshape back to 2D
-        x = x.view(batch_size, 8, 7, 7)  # Reshape to (batch, channels, height, width)
+        x = x.view(batch_size, 8, 7, 7)  # Reshape to (batch, 8, 7, 7)
 
         # Third convolutional block
-        x = self.conv5(x)  # Output: (batch, 16, 7, 7)
-        x = self.bn5(x)
-        x = F.relu(x)
-        #x = self.dropout_2(x)
-        x = self.conv6(x)  # Output: (batch, 32, 7, 7)
-        x = self.bn6(x)
-        x = F.relu(x)
+        x = self.conv5(x)  # Conv5: (batch, 16, 7, 7)
+        x = self.bn5(x)    # BatchNorm after conv5
+        x = F.relu(x)      # ReLU activation
+        x = self.conv6(x)  # Conv6: (batch, 24, 7, 7)
+        x = self.bn6(x)    # BatchNorm after conv6
+        x = F.relu(x)      # ReLU activation
 
         # Global Average Pooling
-        x = F.adaptive_avg_pool2d(x, (2, 2))  # Output: (batch, 32, 4, 4)
-        #x = F.adaptive_avg_pool2d(x, (2, 2))  # Output: (batch, 32, 2, 2)
+        x = F.adaptive_avg_pool2d(x, (3, 3))  # Adaptive average pooling: (batch, 24, 3, 3)
 
         # Flatten and fully connected layer
-        x = x.view(batch_size, -1)  # Flatten to (batch, 32*2*2)
-        x = self.fc1(x)
-        #x = self.bn_fc1(x)
-        #x = F.relu(x)
-        #x = self.fc2(x)
+        x = x.view(batch_size, -1)  # Flatten to (batch, 24*3*3)
+        x = self.fc1(x)  # Fully connected layer
 
-        return F.log_softmax(x, dim=1)
+        return F.log_softmax(x, dim=1)  # Log-Softmax for classification
