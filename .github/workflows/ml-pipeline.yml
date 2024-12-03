@@ -7,8 +7,8 @@ permissions:
   issues: write       # If you need to comment on issues
 
 on:
-  #push:
-  #  branches: [ main ]
+  push:
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -76,9 +76,9 @@ jobs:
         release_name: Release ${{ github.run_number }}
         body: |
           Model trained and validated successfully
-          - Training Accuracy: > 95%
-          - Test Accuracy: > 95%
-          - Parameters: < 25k
+          - Training Accuracy: > 99.4%
+          - Test Accuracy: > 99.4%
+          - Parameters: < 20k
         draft: false
         prerelease: false
 
