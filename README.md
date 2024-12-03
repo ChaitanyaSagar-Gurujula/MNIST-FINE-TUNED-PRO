@@ -7,9 +7,9 @@ A lightweight MNIST classifier with complete MLOps pipeline including automated 
 
 This project implements a lightweight CNN model for MNIST digit classification with the following constraints and features:
 
-- Model Parameters: < 25k
-- Training Accuracy: > 95%
-- Test Accuracy: > 95%
+- Model Parameters: < 20k
+- Training Accuracy: > 99.4%
+- Test Accuracy: > 99.4%
 - Automated CI/CD Pipeline
 - Model Performance Tracking
 - Code Quality Checks
@@ -44,7 +44,7 @@ project_root/
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/mnist-model-mlops.git
+git clone https://github.com/yourusername/mnist-fine-tuned.git
 cd mnist-model-mlops
 ```
 
@@ -103,7 +103,7 @@ git init
 git add .
 git commit -m "Initial commit"
 git branch -M main
-git remote add origin https://github.com/yourusername/mnist-model-mlops.git
+git remote add origin https://github.com/yourusername/mnist-fine-tuned.git
 git push -u origin main
 ```
 
