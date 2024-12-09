@@ -2,6 +2,14 @@ import os
 from pathlib import Path
 import torch
 from torchvision import datasets, transforms
+import numpy as np
+import random
+
+def seed_worker(worker_id):
+    """Function to set random seed for DataLoader workers"""
+    worker_seed = torch.initial_seed() % 2**32
+    np.random.seed(worker_seed)
+    random.seed(worker_seed)
 
 def get_data_path():
     """Get the path to data directory"""
@@ -70,12 +78,17 @@ def get_mnist_loaders(batch_size=128, is_training=True):
         transform=test_transform
     )
     
+    g = torch.Generator()
+    g.manual_seed(42)  # Use the same seed as in set_seed()
+    
     train_loader = torch.utils.data.DataLoader(
         train_dataset,
         batch_size=batch_size,
         shuffle=True,
         num_workers=2,
-        pin_memory=True
+        pin_memory=True,
+        worker_init_fn=seed_worker,
+        generator=g
     )
     
     test_loader = torch.utils.data.DataLoader(
@@ -83,7 +96,9 @@ def get_mnist_loaders(batch_size=128, is_training=True):
         batch_size=batch_size,
         shuffle=False,
         num_workers=2,
-        pin_memory=True
+        pin_memory=True,
+        worker_init_fn=seed_worker,
+        generator=g
     )
     
     return train_loader, test_loader 

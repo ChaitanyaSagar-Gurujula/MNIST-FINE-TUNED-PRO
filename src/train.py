@@ -6,6 +6,18 @@ from src.dataset import get_mnist_loaders
 from src.utils import count_parameters
 from tqdm import tqdm
 import matplotlib.pyplot as plt
+import numpy as np
+import random
+
+def set_seed(seed=42):
+    """Set seeds for reproducibility."""
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)  # for multi-GPU
+    np.random.seed(seed)
+    random.seed(seed)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False  # This can slow down training
 
 def calculate_accuracy(model, data_loader, device, desc="Accuracy"):
     """
@@ -251,6 +263,9 @@ def visualize_misclassified(model, test_loader, device, num_images=25):
     plt.show()
 
 def main():
+    # Set seeds first
+    set_seed(42)  # You can choose any seed value
+    
     # Set device
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f"Using device: {device}")
@@ -263,7 +278,7 @@ def main():
     train_loader, test_loader = get_mnist_loaders(batch_size=128, is_training=True)
     
     # Optimizer and Scheduler setup for multiple epochs
-    num_epochs = 20
+    num_epochs = 15
     learning_rate = 0.01
     #optimizer = optim.Adam(model.parameters(), lr=learning_rate)
     optimizer = optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=1e-4)
