@@ -31,7 +31,7 @@ def get_mnist_loaders(batch_size=128, is_training=True):
         # 1. Spatial transforms (work on PIL images)
         transforms.RandomAffine(
             degrees=5,
-            translate=(0.05, 0.05),
+            #translate=(0.05, 0.05),
             shear=(-5, 5),
             fill=0
         ),
@@ -43,12 +43,12 @@ def get_mnist_loaders(batch_size=128, is_training=True):
         # 2. Convert to tensor
         transforms.ToTensor(),
         # 3. Erasing (works on tensor)
-        transforms.RandomErasing(
-            p=0.2,
-            scale=(0.02, 0.15),
-            ratio=(0.3, 3.3),
-            value=0
-        ),
+        #transforms.RandomErasing(
+        #    p=0.2,
+        #    scale=(0.02, 0.15),
+        #    ratio=(0.3, 3.3),
+        #    value=0
+        #),
         # 4. Normalize (always last)
             transforms.Normalize((0.1307,), (0.3081,))
         ])

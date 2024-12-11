@@ -1,13 +1,14 @@
 import torch
 import torch.nn.functional as F
 import torch.optim as optim
-from src.model import LightMNIST
+from src.model import get_model
 from src.dataset import get_mnist_loaders
 from src.utils import count_parameters
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 import numpy as np
 import random
+import argparse
 
 def set_seed(seed=42):
     """Set seeds for reproducibility."""
@@ -262,16 +263,18 @@ def visualize_misclassified(model, test_loader, device, num_images=25):
     plt.savefig('misclassified.png')
     plt.show()
 
-def main():
+def main(model_name):
     # Set seeds first
-    set_seed(42)  # You can choose any seed value
+    set_seed(42)
     
     # Set device
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f"Using device: {device}")
     
-    # Create model
-    model = LightMNIST().to(device)
+    # Select model (you can change this to 'simple' or 'deep')
+    model_class = get_model(model_name)
+    model = model_class().to(device)
+    print(f"Selected model: {model_name}")
     print(f"Total parameters: {count_parameters(model)}")
     
     # Get data loaders
@@ -384,4 +387,10 @@ def plot_lr_changes(history, num_epochs):
     plt.show()
 
 if __name__ == "__main__":
-    main() 
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--model', type=str, default='light',
+                      choices=['super_light', 'light', 'simple', 'deep'],
+                      help='Model architecture to use')
+    args = parser.parse_args()
+    
+    main(model_name=args.model) 
