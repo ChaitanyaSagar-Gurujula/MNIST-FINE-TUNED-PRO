@@ -19,6 +19,7 @@ def set_seed(seed=42):
     random.seed(seed)
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False  # This can slow down training
+    torch.use_deterministic_algorithms(True, warn_only=True) # Enforce deterministic algorithms
 
 def calculate_accuracy(model, data_loader, device, desc="Accuracy"):
     """
@@ -105,13 +106,15 @@ def train(model, train_loader, test_loader, optimizer, scheduler, device, num_ep
         model.train()
         running_loss = 0.0
         
-        print("\nTraining Progress:")
-        print("-" * 100)
-        print(f"{'Batch':^10} | {'Loss':^10} | {'Avg Loss':^10} | {'Batch Acc':^10} | {'LR':^10} | {'Progress':^20}")
-        print("-" * 100)
+
+        desc =f"Realtime Epoch Training"
+
+        pbar = tqdm(train_loader, desc=desc, 
+                total=len(train_loader),
+                bar_format='{l_bar}{bar:30}{r_bar}')
         
         # Training loop
-        for batch_idx, (data, target) in enumerate(train_loader, 1):
+        for data, target in pbar:
             current_step += 1
             current_lr = optimizer.param_groups[0]['lr']
             history['learning_rates'].append(current_lr)
@@ -133,18 +136,10 @@ def train(model, train_loader, test_loader, optimizer, scheduler, device, num_ep
             pred = output.argmax(dim=1, keepdim=True)
             batch_acc = 100 * pred.eq(target.view_as(pred)).sum().item() / len(data)
             
-            if batch_idx <= 5 or batch_idx % 50 == 0 or batch_idx == len(train_loader):
-                print(
-                    f"{batch_idx:^10d} | "
-                    f"{loss.item():^10.4f} | "
-                    f"{running_loss/batch_idx:^10.4f} | "
-                    f"{batch_acc:^10.2f}% | "
-                    f"{current_lr:^10.6f} | "
-                    f"{batch_idx:^6d}/{len(train_loader):^6d}"
-                )
+            pbar.set_description(
+                f'{desc} Accuracy: {batch_acc:.2f}% | Loss: {loss.item():.4f}'
+            )
         
-        
-        print("-" * 100)
         
         # Calculate final training accuracy for this epoch
         print("\nCalculating final training accuracy...")
@@ -199,16 +194,8 @@ def print_training_conclusion(history, model, device):
     
     best_info = history['best_model_info']
     
-    # Get accuracy without transformations
-    model.eval()  # Set model to evaluation mode
-    train_loader_no_aug, _ = get_mnist_loaders(batch_size=512, is_training=False)
-    train_acc_no_aug, train_loss_no_aug, _, _ = calculate_accuracy(
-        model, train_loader_no_aug, device, desc="Training (No Aug)"
-    )
-    
     print(f"\nBest Model achieved at Epoch {best_info['epoch']}:")
-    print(f"├── Training Accuracy (with aug): {best_info['train_acc']:.2f}%")
-    print(f"├── Training Accuracy (no aug): {train_acc_no_aug:.2f}%")
+    print(f"├── Training Accuracy: {best_info['train_acc']:.2f}%")
     print(f"├── Training Loss: {best_info['train_loss']:.4f}")
     print(f"├── Test Accuracy: {best_info['test_acc']:.2f}%")
     print(f"└── Test Loss: {best_info['test_loss']:.4f}")
@@ -263,7 +250,7 @@ def visualize_misclassified(model, test_loader, device, num_images=25):
     plt.savefig('misclassified.png')
     plt.show()
 
-def main(model_name):
+def main(model_name, is_train_augmentation):
     # Set seeds first
     set_seed(42)
     
@@ -276,9 +263,10 @@ def main(model_name):
     model = model_class().to(device)
     print(f"Selected model: {model_name}")
     print(f"Total parameters: {count_parameters(model)}")
-    
+    print(f"Training Data Augmented: {is_train_augmentation}")
+
     # Get data loaders
-    train_loader, test_loader = get_mnist_loaders(batch_size=128, is_training=True)
+    train_loader, test_loader = get_mnist_loaders(batch_size=128, is_train_augmentation=is_train_augmentation)
     
     # Optimizer and Scheduler setup for multiple epochs
     num_epochs = 15
@@ -388,9 +376,12 @@ def plot_lr_changes(history, num_epochs):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model', type=str, default='light',
-                      choices=['super_light', 'light', 'simple', 'deep'],
-                      help='Model architecture to use')
+    parser.add_argument('--model', type=str, default='super_light',
+                        choices=[ 'light', 'lightest', 'super_light'],
+                        help='Model architecture to use')
+    parser.add_argument('--is_train_aug', type=lambda x: x.lower() in ['true', '1'],
+                        default=True,
+                        help='Training data to be augmented or not (True/False)')
     args = parser.parse_args()
-    
-    main(model_name=args.model) 
+
+    main(model_name=args.model, is_train_augmentation=args.is_train_aug)

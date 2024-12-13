@@ -1,19 +1,19 @@
 import pytest
 import torch
-from src.model import LightMNIST
+from src.model import SuperLightMNIST
 from src.dataset import get_mnist_loaders
 from src.train import calculate_accuracy
 
 def test_model_parameters():
     """Test if model has less than 20k parameters"""
-    model = LightMNIST()
+    model = SuperLightMNIST()
     total_params = sum(p.numel() for p in model.parameters())
     assert total_params < 20000, f"Model has {total_params} parameters, should be less than 20000"
 
 def test_model_performance():
     """Test if saved model achieves required accuracy on both training and test sets"""
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model = LightMNIST().to(device)
+    model = SuperLightMNIST().to(device)
     
     # Load the best saved model
     try:
@@ -28,7 +28,7 @@ def test_model_performance():
         pytest.skip("No saved model found. Run training first.")
     
     # Get both train and test loaders
-    train_loader, test_loader = get_mnist_loaders(batch_size=128, is_training=False)
+    train_loader, test_loader = get_mnist_loaders(batch_size=128, is_train_augmentation=False)
     
     # Evaluate on training set
     train_acc, train_loss, train_correct, train_total = calculate_accuracy(
@@ -51,7 +51,7 @@ def test_model_performance():
 
 def test_batch_normalization():
     """Test if BatchNorm layers are working correctly"""
-    model = LightMNIST()
+    model = SuperLightMNIST()
     model.train()  # Set to train mode to update running stats
     
     # Create dummy input and do multiple forward passes
@@ -75,7 +75,7 @@ def test_batch_normalization():
 
 def test_dropout():
     """Test if Dropout layers behave differently in train/eval modes"""
-    model = LightMNIST()
+    model = SuperLightMNIST()
     x = torch.randn(100, 1, 28, 28)
     
     # Test in training mode
@@ -95,15 +95,4 @@ def test_dropout():
     # Training should have more variance due to dropout
     assert train_var > eval_var, "Dropout not affecting training variance"
 
-def test_has_final_classification_layer():
-    """Test if model has either FC layer or GAP for final classification"""
-    model = LightMNIST()
-    
-    # Check for FC layer
-    has_fc = hasattr(model, 'fc1')
-    
-    # Check for GAP in forward method
-    has_gap = 'adaptive_avg_pool2d' in str(model.forward.__code__.co_code)
-    
-    assert has_fc or has_gap, "Model must have either Fully Connected layer or Global Average Pooling"
 

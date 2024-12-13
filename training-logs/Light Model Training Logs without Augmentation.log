@@ -1,0 +1,243 @@
+(session7) (base) Chaitanyas-MacBook-Pro:mnist-fine-tuned-pro chaitanyasagargurujula$ python -m src.train --model light --is_train_
+aug False
+Using device: cpu
+Selected model: light
+Total parameters: 4738
+Training Data Augmented: False
+
+Epoch 1/15
+==================================================
+Realtime Epoch Training Accuracy: 97.92% | Loss: 0.0729: 100%|██████████████████████████████| 469/469 [00:12<00:00, 36.77it/s]
+
+Calculating final training accuracy...
+Epoch 1 Training: 94.29% | Loss: 0.1861: 100%|██████████████████████████████| 469/469 [00:04<00:00, 108.06it/s]
+
+Calculating test accuracy...
+Epoch 1 Testing: 94.34% | Loss: 0.1732: 100%|██████████████████████████████| 79/79 [00:01<00:00, 41.42it/s]
+
+Epoch 1 Summary:
+Training - Accuracy: 94.29%, Loss: 0.1861
+Testing  - Accuracy: 94.34%, Loss: 0.1732
+New best accuracy! Saving model...
+
+Epoch 2/15
+==================================================
+Realtime Epoch Training Accuracy: 97.92% | Loss: 0.0620: 100%|██████████████████████████████| 469/469 [00:11<00:00, 39.83it/s] 
+
+Calculating final training accuracy...
+Epoch 2 Training: 97.02% | Loss: 0.0988: 100%|██████████████████████████████| 469/469 [00:04<00:00, 111.24it/s]
+
+Calculating test accuracy...
+Epoch 2 Testing: 97.42% | Loss: 0.0812: 100%|██████████████████████████████| 79/79 [00:01<00:00, 42.08it/s]
+
+Epoch 2 Summary:
+Training - Accuracy: 97.02%, Loss: 0.0988
+Testing  - Accuracy: 97.42%, Loss: 0.0812
+New best accuracy! Saving model...
+
+Epoch 3/15
+==================================================
+Realtime Epoch Training Accuracy: 97.92% | Loss: 0.0534: 100%|██████████████████████████████| 469/469 [00:12<00:00, 36.70it/s] 
+
+Calculating final training accuracy...
+Epoch 3 Training: 97.47% | Loss: 0.0808: 100%|██████████████████████████████| 469/469 [00:04<00:00, 102.27it/s]
+
+Calculating test accuracy...
+Epoch 3 Testing: 97.58% | Loss: 0.0740: 100%|██████████████████████████████| 79/79 [00:01<00:00, 40.24it/s]
+
+Epoch 3 Summary:
+Training - Accuracy: 97.47%, Loss: 0.0808
+Testing  - Accuracy: 97.58%, Loss: 0.0740
+New best accuracy! Saving model...
+
+Epoch 4/15
+==================================================
+Realtime Epoch Training Accuracy: 98.96% | Loss: 0.0495: 100%|██████████████████████████████| 469/469 [00:11<00:00, 39.13it/s] 
+
+Calculating final training accuracy...
+Epoch 4 Training: 97.35% | Loss: 0.0882: 100%|██████████████████████████████| 469/469 [00:04<00:00, 106.94it/s]
+
+Calculating test accuracy...
+Epoch 4 Testing: 97.00% | Loss: 0.0872: 100%|██████████████████████████████| 79/79 [00:01<00:00, 40.55it/s]
+
+Epoch 4 Summary:
+Training - Accuracy: 97.35%, Loss: 0.0882
+Testing  - Accuracy: 97.00%, Loss: 0.0872
+
+Epoch 5/15
+==================================================
+Realtime Epoch Training Accuracy: 96.88% | Loss: 0.1212: 100%|██████████████████████████████| 469/469 [00:11<00:00, 39.70it/s] 
+
+Calculating final training accuracy...
+Epoch 5 Training: 97.83% | Loss: 0.0712: 100%|██████████████████████████████| 469/469 [00:04<00:00, 109.14it/s]
+
+Calculating test accuracy...
+Epoch 5 Testing: 97.83% | Loss: 0.0675: 100%|██████████████████████████████| 79/79 [00:01<00:00, 41.90it/s]
+
+Epoch 5 Summary:
+Training - Accuracy: 97.83%, Loss: 0.0712
+Testing  - Accuracy: 97.83%, Loss: 0.0675
+New best accuracy! Saving model...
+
+Epoch 6/15
+==================================================
+Realtime Epoch Training Accuracy: 100.00% | Loss: 0.0135: 100%|██████████████████████████████| 469/469 [00:12<00:00, 38.61it/s]
+
+Calculating final training accuracy...
+Epoch 6 Training: 98.38% | Loss: 0.0537: 100%|██████████████████████████████| 469/469 [00:04<00:00, 109.34it/s]
+
+Calculating test accuracy...
+Epoch 6 Testing: 98.26% | Loss: 0.0540: 100%|██████████████████████████████| 79/79 [00:01<00:00, 41.78it/s]
+
+Epoch 6 Summary:
+Training - Accuracy: 98.38%, Loss: 0.0537
+Testing  - Accuracy: 98.26%, Loss: 0.0540
+New best accuracy! Saving model...
+
+Epoch 7/15
+==================================================
+Realtime Epoch Training Accuracy: 96.88% | Loss: 0.1424: 100%|██████████████████████████████| 469/469 [00:11<00:00, 39.52it/s] 
+
+Calculating final training accuracy...
+Epoch 7 Training: 98.37% | Loss: 0.0571: 100%|██████████████████████████████| 469/469 [00:04<00:00, 109.12it/s]
+
+Calculating test accuracy...
+Epoch 7 Testing: 98.06% | Loss: 0.0620: 100%|██████████████████████████████| 79/79 [00:01<00:00, 41.30it/s]
+
+Epoch 7 Summary:
+Training - Accuracy: 98.37%, Loss: 0.0571
+Testing  - Accuracy: 98.06%, Loss: 0.0620
+
+Epoch 8/15
+==================================================
+Realtime Epoch Training Accuracy: 97.92% | Loss: 0.1099: 100%|██████████████████████████████| 469/469 [00:12<00:00, 37.00it/s] 
+
+Calculating final training accuracy...
+Epoch 8 Training: 98.83% | Loss: 0.0377: 100%|██████████████████████████████| 469/469 [00:04<00:00, 110.24it/s]
+
+Calculating test accuracy...
+Epoch 8 Testing: 98.66% | Loss: 0.0405: 100%|██████████████████████████████| 79/79 [00:01<00:00, 41.51it/s]
+
+Epoch 8 Summary:
+Training - Accuracy: 98.83%, Loss: 0.0377
+Testing  - Accuracy: 98.66%, Loss: 0.0405
+New best accuracy! Saving model...
+
+Epoch 9/15
+==================================================
+Realtime Epoch Training Accuracy: 100.00% | Loss: 0.0128: 100%|██████████████████████████████| 469/469 [00:11<00:00, 39.22it/s]
+
+Calculating final training accuracy...
+Epoch 9 Training: 98.84% | Loss: 0.0365: 100%|██████████████████████████████| 469/469 [00:04<00:00, 109.05it/s]
+
+Calculating test accuracy...
+Epoch 9 Testing: 98.61% | Loss: 0.0416: 100%|██████████████████████████████| 79/79 [00:01<00:00, 41.87it/s]
+
+Epoch 9 Summary:
+Training - Accuracy: 98.84%, Loss: 0.0365
+Testing  - Accuracy: 98.61%, Loss: 0.0416
+
+Epoch 10/15
+==================================================
+Realtime Epoch Training Accuracy: 97.92% | Loss: 0.0566: 100%|██████████████████████████████| 469/469 [00:12<00:00, 38.91it/s] 
+
+Calculating final training accuracy...
+Epoch 10 Training: 99.15% | Loss: 0.0264: 100%|██████████████████████████████| 469/469 [00:04<00:00, 111.13it/s]
+
+Calculating test accuracy...
+Epoch 10 Testing: 98.98% | Loss: 0.0359: 100%|██████████████████████████████| 79/79 [00:01<00:00, 41.44it/s]
+
+Epoch 10 Summary:
+Training - Accuracy: 99.15%, Loss: 0.0264
+Testing  - Accuracy: 98.98%, Loss: 0.0359
+New best accuracy! Saving model...
+
+Epoch 11/15
+==================================================
+Realtime Epoch Training Accuracy: 96.88% | Loss: 0.0588: 100%|██████████████████████████████| 469/469 [00:12<00:00, 38.46it/s] 
+
+Calculating final training accuracy...
+Epoch 11 Training: 99.32% | Loss: 0.0215: 100%|██████████████████████████████| 469/469 [00:04<00:00, 109.09it/s]
+
+Calculating test accuracy...
+Epoch 11 Testing: 98.80% | Loss: 0.0367: 100%|██████████████████████████████| 79/79 [00:01<00:00, 41.79it/s]
+
+Epoch 11 Summary:
+Training - Accuracy: 99.32%, Loss: 0.0215
+Testing  - Accuracy: 98.80%, Loss: 0.0367
+
+Epoch 12/15
+==================================================
+Realtime Epoch Training Accuracy: 98.96% | Loss: 0.0207: 100%|██████████████████████████████| 469/469 [00:11<00:00, 39.58it/s] 
+
+Calculating final training accuracy...
+Epoch 12 Training: 99.54% | Loss: 0.0150: 100%|██████████████████████████████| 469/469 [00:04<00:00, 107.02it/s]
+
+Calculating test accuracy...
+Epoch 12 Testing: 99.00% | Loss: 0.0320: 100%|██████████████████████████████| 79/79 [00:01<00:00, 41.81it/s]
+
+Epoch 12 Summary:
+Training - Accuracy: 99.54%, Loss: 0.0150
+Testing  - Accuracy: 99.00%, Loss: 0.0320
+New best accuracy! Saving model...
+
+Epoch 13/15
+==================================================
+Realtime Epoch Training Accuracy: 98.96% | Loss: 0.0192: 100%|██████████████████████████████| 469/469 [00:12<00:00, 38.75it/s] 
+
+Calculating final training accuracy...
+Epoch 13 Training: 99.72% | Loss: 0.0106: 100%|██████████████████████████████| 469/469 [00:04<00:00, 99.56it/s] 
+
+Calculating test accuracy...
+Epoch 13 Testing: 99.04% | Loss: 0.0308: 100%|██████████████████████████████| 79/79 [00:01<00:00, 41.74it/s]
+
+Epoch 13 Summary:
+Training - Accuracy: 99.72%, Loss: 0.0106
+Testing  - Accuracy: 99.04%, Loss: 0.0308
+New best accuracy! Saving model...
+
+Epoch 14/15
+==================================================
+Realtime Epoch Training Accuracy: 100.00% | Loss: 0.0072: 100%|██████████████████████████████| 469/469 [00:11<00:00, 39.20it/s]
+
+Calculating final training accuracy...
+Epoch 14 Training: 99.78% | Loss: 0.0085: 100%|██████████████████████████████| 469/469 [00:04<00:00, 103.49it/s]
+
+Calculating test accuracy...
+Epoch 14 Testing: 99.06% | Loss: 0.0303: 100%|██████████████████████████████| 79/79 [00:01<00:00, 41.63it/s]
+
+Epoch 14 Summary:
+Training - Accuracy: 99.78%, Loss: 0.0085
+Testing  - Accuracy: 99.06%, Loss: 0.0303
+New best accuracy! Saving model...
+
+Epoch 15/15
+==================================================
+Realtime Epoch Training Accuracy: 97.92% | Loss: 0.0955: 100%|██████████████████████████████| 469/469 [00:11<00:00, 39.52it/s] 
+
+Calculating final training accuracy...
+Epoch 15 Training: 99.80% | Loss: 0.0081: 100%|██████████████████████████████| 469/469 [00:04<00:00, 106.24it/s]
+
+Calculating test accuracy...
+Epoch 15 Testing: 99.09% | Loss: 0.0302: 100%|██████████████████████████████| 79/79 [00:01<00:00, 42.04it/s]
+
+Epoch 15 Summary:
+Training - Accuracy: 99.80%, Loss: 0.0081
+Testing  - Accuracy: 99.09%, Loss: 0.0302
+New best accuracy! Saving model...
+
+==================================================
+TRAINING COMPLETED - FINAL RESULTS
+==================================================
+
+Model Architecture:
+└── Total Parameters: 4,738
+
+Best Model achieved at Epoch 15:
+├── Training Accuracy: 99.80%
+├── Training Loss: 0.0081
+├── Test Accuracy: 99.09%
+└── Test Loss: 0.0302
+
+Model saved as: 'best_model.pth'
+==================================================

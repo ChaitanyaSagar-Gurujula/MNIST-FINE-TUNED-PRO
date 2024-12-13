@@ -1,16 +1,15 @@
 
 # MNIST Model Fine-Tuned Project
 
-A lightweight MNIST classifier with complete MLOps pipeline including automated testing, validation, and deployment.
+A lightweight MNIST classifier with test accuracy above 99.4% accuracy.
 
 ## Project Overview
 
 This project implements a lightweight CNN model for MNIST digit classification with the following constraints and features:
 
-- Model Parameters: < 20k
+- Model Parameters: < 8
 - Training Accuracy: > 99.4%
 - Test Accuracy: > 99.4%
-- Automated CI/CD Pipeline
 - Model Performance Tracking
 - Code Quality Checks
 
@@ -35,7 +34,6 @@ project_root/
 │
 ├── setup.py          # Package setup
 ├── requirements.txt  # Dependencies
-├── conftest.py       # Pytest configuration
 └── README.md         # This file
 ```
 
@@ -71,11 +69,11 @@ To train the model, run the following command:
 ```bash
 # From project root directory
 export PYTHONPATH=$PYTHONPATH:$(pwd)
-python src/train.py
+python src/train.py  --model super_light --is_train_aug True
 ```
 or
 ```bash
-python -m src.train
+python -m src.train --model super_light --is_train_aug True
 ```
 This will:
 - Download MNIST dataset (if not present)
@@ -103,7 +101,7 @@ git init
 git add .
 git commit -m "Initial commit"
 git branch -M main
-git remote add origin https://github.com/yourusername/mnist-fine-tuned.git
+git remote add origin https://github.com/yourusername/mnist-fine-tuned-pro.git
 git push -u origin main
 ```
 
@@ -121,13 +119,15 @@ git push -u origin main
    - Click on the job you're interested in (e.g. tests or linting).
    - Click on the log link under "Logs".
 
+Note: Currently Github Actions won't be triggered while pushing changes to Github.
+
 ## Model Architecture
 
-- Used 3 Convolutional blocks with Batch Normalization and Dropout for regularization.
-- Used Adaptive Global Average Pooling followed by Fully Connected layer to map to output classes.
+- Used 2 Convolutional blocks with Batch Normalization and Dropout for regularization.
+- Used Adaptive Global Average Pooling followed by Convolution layer to map to output classes.
 - Used OneCycleLR Scheduler for learning rate optimization.
 - Used Adam Optimizer with weight decay for better convergence.
-- Used Random Affine, Perspective and Erasing Augmentations for better model generalization.
+- Used Random Affine, Perspective Augmentations for better model generalization.
 
 ## Training Configuration
 
@@ -136,22 +136,129 @@ git push -u origin main
 - **Batch Size:** 128
 - **Epochs:** Configurable (default=20)
 
-## Test Cases
+## Models
 
-### Model Architecture:
-- Parameter count: 8,966
-- Correct output shape
+### LightMNIST:
 
-### Model Performance:
-- Training accuracy = 99.55%
-- Test accuracy = 99.55%
+#### Target:
 
-## Logs
+ - Basic Setup with working Model of final receptive field value 28
+ - Get understanding of the performance of the model with simple structure.
 
-During training, detailed logs are generated showing batch progress, loss, accuracy, and learning rate. After training, a summary of the best model's performance is displayed, including training and test accuracies with and without augmentations.
+#### Results:
+Parameters: 4738
 
-### Training Output Screenshot
-![Training Log](Training%20Logs.png)
+##### Without Training Data Augmentation:
+
+ - Best Train Accuracy: 99.80
+ - Best Test Accuracy: 99.09 (15th Epoch)
+
+##### With Training Data Augmentation:
+
+ - Best Train Accuracy: 99.11
+ - Best Test Accuracy: 99.27 (15th Epoch)
+
+#### Analysis: 
+- Initial model works fine. But target is not achieved with or without data augmentation.
+- Model trained without data augmentation is causing overfitting.
+- Model training with data augmentation seems fine, but it doesnt hit our test acurracy target of 99.4 within 15 epochs.
+- Lets add batch normalization and dropout regularization to see if it can avoid overfitting and also for faster convergence.
+
+#### Logs:
+- [View Training Logs without Data Augmentation](./training-logs/Light%20Model%20Training%20Logs%20without%20Augmentation.log)
+- [View Training Logs with Data Augmentation](./training-logs/Light%20Model%20Training%20Logs%20with%20Augmentation.log)
+---
+### LighestMNIST:
+
+#### Target:
+
+- Model of final receptive field value 28
+- Efficiently using batch normalization and dropout for performance improvements.
+
+#### Results:
+Parameters: 4274
+
+##### Without Training Data Augmentation:
+
+ - Best Train Accuracy: 99.69
+ - Best Test Accuracy: 99.30 (15th Epoch)
+
+##### With Training Data Augmentation:
+
+ - Best Train Accuracy: 99.18
+ - Best Test Accuracy: 99.42 (14th Epoch)
+
+#### Analysis: 
+- Reached Closer to the target accuracy. 
+- Overfitting got reduced in Model trained without data augmentation.
+- Model training with data augmentation has hit our target accuracy for the last two epochs.
+- Lets add GAP in the last layers to see if it can help in improving the performance further.
+
+#### Logs:
+- [View Training Logs without Data Augmentation](./training-logs/Lightest%20Model%20Training%20Logs%20without%20Augmentation.log)
+- [View Training Logs with Data Augmentation](./training-logs/Lightest%20Model%20Training%20Logs%20with%20Augmentation.log)
+---
+### SuperLightMNIST:
+
+#### Target:
+
+- Model of final receptive field value 28
+- Trying GAP to see if it can help in performance improvement.
+For this, removed the transition layer(Max pooling and 1D conv) for the second convolution block  and replace it with GAP instead.
+This can cause slight increase in params but it should be fine as the total params are less than threshold (8k params).
+
+#### Results:
+Parameters: 4842
+
+##### Without Training Data Augmentation:
+
+ - Best Train Accuracy: 99.72
+ - Best Test Accuracy: 99.42 (15th Epoch)
+
+##### With Training Data Augmentation:
+
+ - Best Train Accuracy: 99.26
+ - Best Test Accuracy: 99.48 (13th Epoch)
+
+#### Analysis: 
+- Achieved Target Accuracy!
+- After adding GAP, model trained without data augmentation has hit the target accuracy but only once.
+- Model training with data augmentation has hit our target accuracy consistently for the last 5 epochs.
+- Used AdaptiveGAP and it has helped in improving model accuracy consistently.
+
+#### Logs:
+
+- [View Training Logs without Data Augmentation](./training-logs/SuperLight%20Model%20Training%20Logs%20without%20Augmentation.log)
+- [View Training Logs with Data Augmentation](./training-logs/SuperLight%20Model%20Training%20Logs%20with%20Augmentation.log)
+- [View CUDA Training Logs without Data Augmentation](./training-logs/CUDA%20SuperLight%20Model%20Training%20Logs%20without%20Augmentation.log)
+- [View CUDA Training Logs with Data Augmentation](./training-logs/SuperLight%20Model%20Training%20Logs%20with%20Augmentation.log)
+
+#### Cloud Training Screenshots
+
+##### Without Data Augmentation:
+![Cloud Training without Aug Pre](./cloud-training-screenshots/Cloud%20Training%20Without%20Data%20Augmentation_prefinal.png)
+![Cloud Training without Aug](./cloud-training-screenshots/Cloud%20Training%20Without%20Data%20Augmentation_final.png)
+
+
+##### With Data Augmentation:
+![Final model Cloud Training pre](./cloud-training-screenshots/Cloud%20Training%20With%20Data%20Augmentation_prefinal.png)
+![Final model Cloud Training](./cloud-training-screenshots/Cloud%20Training%20With%20Data%20Augmentation_final.png)
+
+#### PyTorch Model Files obtained from CUDA Training
+
+##### Without Data Augmentation:
+ [SuperLightMNIST No Data Aug Model](./best_model_cuda_no_data_aug.pth)
+
+
+##### With Data Augmentation:
+ [SuperLightMNIST With Data Aug Model](./best_model_cuda.pth)
+
+#### PyTorch Model Files obtained from CPU Training
+ [SuperLightMNIST With Data Aug Model In CPU](./best_model.pth)
+
+Note: Only Final best model is saved in CPU.
+
+---
 
 ## License
 
