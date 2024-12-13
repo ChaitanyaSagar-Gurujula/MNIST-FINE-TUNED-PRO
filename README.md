@@ -168,7 +168,7 @@ Parameters: 4738
 - [View Training Logs without Data Augmentation](./training-logs/Light%20Model%20Training%20Logs%20without%20Augmentation.log)
 - [View Training Logs with Data Augmentation](./training-logs/Light%20Model%20Training%20Logs%20with%20Augmentation.log)
 ---
-### LighestMNIST:
+### LightestMNIST:
 
 #### Target:
 
